@@ -177,6 +177,24 @@ app.get('/ssh/host/:host?', function (req, res, next) {
   if (req.session.ssh.header.background) validator.escape(req.session.ssh.header.background)
 })
 
+app.post('/start_session', (req, resp) => {
+
+  let data = req.body;
+  //
+  let opts = {
+    host: data.host,
+    port: data.port,
+    username: data.username,
+    password: data.password,
+  };
+
+  let ssh = new SshSession(opts);
+  await ssh.startSession();
+
+  resp.write({session_token: req.session.ssh.token})
+  req.session.ssh = ssh;
+})
+
 // express error handling
 app.use(function (req, res, next) {
   res.status(404).send("Sorry can't find that!")
