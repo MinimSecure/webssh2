@@ -132,7 +132,7 @@ module.exports = function socket (socket) {
   })
   if (socket.request.session.username && (socket.request.session.userpassword || socket.request.session.privatekey) && socket.request.session.ssh) {
     // console.log('hostkeys: ' + hostkeys[0].[0])
-    conn.connect({
+    let ssh_config = {
       host: socket.request.session.ssh.host,
       port: socket.request.session.ssh.port,
       localAddress: socket.request.session.ssh.localAddress,
@@ -146,7 +146,9 @@ module.exports = function socket (socket) {
       keepaliveInterval: socket.request.session.ssh.keepaliveInterval,
       keepaliveCountMax: socket.request.session.ssh.keepaliveCountMax,
       debug: debug('ssh2')
-    })
+    };
+
+    conn.connect(ssh_config)
   } else {
     debugWebSSH2('Attempt to connect without session.username/password or session varialbles defined, potentially previously abandoned client session. disconnecting websocket client.\r\nHandshake information: \r\n  ' + JSON.stringify(socket.handshake))
     socket.emit('ssherror', 'WEBSOCKET ERROR - Refresh the browser and try again')
