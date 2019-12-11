@@ -37,11 +37,13 @@ module.exports = function socket (socket) {
     }
   }
 
-  var conn = new SSH()
   socket.on('geometry', function socketOnGeometry (cols, rows) {
     termCols = cols
     termRows = rows
   })
+
+  var conn = new SSH()
+
   conn.on('banner', function connOnBanner (data) {
     // need to convert to cr/lf for proper formatting
     data = data.replace(/\r?\n/g, '\r\n')
@@ -130,6 +132,7 @@ module.exports = function socket (socket) {
     debugWebSSH2('conn.on(\'keyboard-interactive\')')
     finish([socket.request.session.userpassword])
   })
+
   if (socket.request.session.username && (socket.request.session.userpassword || socket.request.session.privatekey) && socket.request.session.ssh) {
     // console.log('hostkeys: ' + hostkeys[0].[0])
     conn.connect({
