@@ -7,7 +7,7 @@
 var debug = require('debug')
 var debugWebSSH2 = require('debug')('WebSSH2')
 var SSH = require('ssh2').Client
-var CIDRMatcher = require('cidr-matcher');
+var CIDRMatcher = require('cidr-matcher')
 // var fs = require('fs')
 // var hostkeys = JSON.parse(fs.readFileSync('./hostkeyhashes.json', 'utf8'))
 var termCols, termRows
@@ -25,8 +25,8 @@ module.exports = function socket (socket) {
   }
 
   // If configured, check that requsted host is in a permitted subnet
-  if ( (((socket.request.session || {}).ssh || {}).allowedSubnets || {}).length && ( socket.request.session.ssh.allowedSubnets.length > 0 ) )  {
-    var matcher = new CIDRMatcher(socket.request.session.ssh.allowedSubnets);
+  if ((((socket.request.session || {}).ssh || {}).allowedSubnets || {}).length && (socket.request.session.ssh.allowedSubnets.length > 0)) {
+    var matcher = new CIDRMatcher(socket.request.session.ssh.allowedSubnets)
     if (!matcher.contains(socket.request.session.ssh.host)) {
       console.log('WebSSH2 ' + 'error: Requested host outside configured subnets / REJECTED'.red.bold +
       ' user=' + socket.request.session.username.yellow.bold.underline +
@@ -124,7 +124,7 @@ module.exports = function socket (socket) {
   })
 
   conn.on('end', function connOnEnd (err) { SSHerror('CONN END BY HOST', err) })
-  conn.on('close', function connOnClose (err) { SSHerror('CONN CLOSE', err) }) 
+  conn.on('close', function connOnClose (err) { SSHerror('CONN CLOSE', err) })
   conn.on('error', function connOnError (err) { SSHerror('CONN ERROR', err) })
   conn.on('keyboard-interactive', function connOnKeyboardInteractive (name, instructions, instructionsLang, prompts, finish) {
     debugWebSSH2('conn.on(\'keyboard-interactive\')')
@@ -132,7 +132,7 @@ module.exports = function socket (socket) {
   })
   if (socket.request.session.username && (socket.request.session.userpassword || socket.request.session.privatekey) && socket.request.session.ssh) {
     // console.log('hostkeys: ' + hostkeys[0].[0])
-    let ssh_config = {
+    const sshConfig = {
       host: socket.request.session.ssh.host,
       port: socket.request.session.ssh.port,
       localAddress: socket.request.session.ssh.localAddress,
@@ -146,9 +146,9 @@ module.exports = function socket (socket) {
       keepaliveInterval: socket.request.session.ssh.keepaliveInterval,
       keepaliveCountMax: socket.request.session.ssh.keepaliveCountMax,
       debug: debug('ssh2')
-    };
+    }
 
-    conn.connect(ssh_config)
+    conn.connect(sshConfig)
   } else {
     debugWebSSH2('Attempt to connect without session.username/password or session varialbles defined, potentially previously abandoned client session. disconnecting websocket client.\r\nHandshake information: \r\n  ' + JSON.stringify(socket.handshake))
     socket.emit('ssherror', 'WEBSOCKET ERROR - Refresh the browser and try again')

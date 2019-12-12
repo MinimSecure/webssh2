@@ -1,7 +1,7 @@
 const path = require('path')
 const fs = require('fs')
 
-const configPath = path.join(path.dirname(require.main.filename), 'config.json');;
+const configPath = path.join(path.dirname(require.main.filename), 'config.json')
 
 console.log('WebSSH2 service reading config from: ' + configPath)
 
@@ -78,22 +78,22 @@ let config = {
   },
   accesslog: false,
   verify: false
-};
+}
 
 // test if config.json exists, if not provide error message but try to run
 // anyway
 try {
   if (fs.existsSync(configPath)) {
-    console.log('ephemeral_auth service reading config from: ' + configPath);
-    config = require('read-config')(configPath);
+    console.log('ephemeral_auth service reading config from: ' + configPath)
+    config = require('read-config')(configPath)
   } else {
-    console.error('\n\nERROR: Missing config.json for webssh. Current config: ' + JSON.stringify(config));
-    console.error('\n  See config.json.sample for details\n\n');
+    console.error('\n\nERROR: Missing config.json for webssh. Current config: ' + JSON.stringify(config))
+    console.error('\n  See config.json.sample for details\n\n')
   }
 } catch (err) {
-  console.error('\n\nERROR: Missing config.json for webssh. Current config: ' + JSON.stringify(config));
-  console.error('\n  See config.json.sample for details\n\n');
-  console.error('ERROR:\n\n  ' + err);
+  console.error('\n\nERROR: Missing config.json for webssh. Current config: ' + JSON.stringify(config))
+  console.error('\n  See config.json.sample for details\n\n')
+  console.error('ERROR:\n\n  ' + err)
 }
 
-module.exports = config;
+module.exports = config
