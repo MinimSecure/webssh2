@@ -51,18 +51,18 @@ app.disable('x-powered-by')
 const publicPath = path.join(path.dirname(require.main.filename), 'client', 'public')
 app.use(express.static(publicPath, expressOptions))
 
-app.get('/reauth', function (req, res, next) {
-  var r = req.headers.referer || '/'
-  res.status(401).send('<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0; url=' + r + '"></head><body bgcolor="#000"></body></html>')
-})
+//app.get('/reauth', function (req, res, next) {
+//  var r = req.headers.referer || '/'
+//  res.status(401).send('<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0; url=' + r + '"></head><body bgcolor="#000"></body></html>')
+//})
 
 // eslint-disable-next-line complexity
-app.get('/ssh/host/:host?', function (req, res, next) {
-  res.sendFile(path.join(path.join(publicPath, 'client.htm')))
-
-  // Setup the session data
-  req.session.ssh = sshSessionConfig(config, Object.assign({}, req.params, req.query, req.headers))
-})
+//app.get('/ssh/host/:host?', function (req, res, next) {
+//  res.sendFile(path.join(path.join(publicPath, 'client.htm')))
+//
+//  // Setup the session data
+//  req.session.ssh = sshSessionConfig(config, Object.assign({}, req.params, req.query, req.headers))
+//})
 
 // eslint-disable-next-line complexity
 app.get('/ssh/token_session/:token', function (req, res, next) {
@@ -73,11 +73,12 @@ app.get('/ssh/token_session/:token', function (req, res, next) {
     delete cachedCredentials[token]
     res.sendFile(path.join(path.join(publicPath, 'client.htm')))
 
-    const { username, userpassword, host, port } = creds
+    const { username, userpassword, host, port, label } = creds
 
     // Setup the session data
     req.session.username = username
     req.session.userpassword = userpassword
+    req.session.label = label
     req.session.ssh = sshSessionConfig(config, Object.assign({}, req.query, req.headers, { host: host, port: port }))
     console.log(`[GET] /ssh/token_session/${token} - Claimed session`)
   } else {
@@ -96,6 +97,7 @@ app.post('/ssh/set_session_credentials', (req, res) => {
     const sshConfig = {
       username: data.username,
       userpassword: data.userpassword,
+      label: data.label,
       host: data.host,
       port: data.port || config.ssh.port
     }

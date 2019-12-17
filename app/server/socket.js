@@ -53,13 +53,13 @@ module.exports = function socket (socket) {
     socket.emit('menu', menuData)
     socket.emit('allowreauth', socket.request.session.ssh.allowreauth)
     socket.emit('setTerminalOpts', socket.request.session.ssh.terminal)
-    socket.emit('title', 'ssh://' + socket.request.session.ssh.host)
+    socket.emit('title', socket.request.session.label ? socket.request.session.label : 'ssh://' + socket.request.session.ssh.host)
     if (socket.request.session.ssh.header.background) socket.emit('headerBackground', socket.request.session.ssh.header.background)
     if (socket.request.session.ssh.header.name) socket.emit('header', socket.request.session.ssh.header.name)
-    socket.emit('footer', 'ssh://' + socket.request.session.username + '@' + socket.request.session.ssh.host + ':' + socket.request.session.ssh.port)
+    socket.emit('footer', socket.request.session.label ? socket.request.session.label : `ssh://${socket.request.session.username}@${socket.request.session.ssh.host}:${socket.request.session.ssh.port}`)
     socket.emit('status', 'SSH CONNECTION ESTABLISHED')
     socket.emit('statusBackground', 'green')
-    socket.emit('allowreplay', socket.request.session.ssh.allowreplay)
+    socket.emit('allowreplay', false);//socket.request.session.ssh.allowreplay)
     conn.shell({
       term: socket.request.session.ssh.term,
       cols: termCols,
@@ -86,10 +86,10 @@ module.exports = function socket (socket) {
       })
       socket.on('control', function socketOnControl (controlData) {
         switch (controlData) {
-          case 'replayCredentials':
-            if (socket.request.session.ssh.allowreplay) {
-              stream.write(socket.request.session.userpassword + '\n')
-            }
+          //case 'replayCredentials':
+          //  if (socket.request.session.ssh.allowreplay) {
+          //    stream.write(socket.request.session.userpassword + '\n')
+          //  }
           /* falls through */
           default:
             console.log('controlData: ' + controlData)
