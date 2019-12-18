@@ -1,18 +1,16 @@
-'use strict'
 /* jshint esversion: 6, asi: true, node: true */
 // util.js
 
-// private
 require('colors') // allow for color property extensions in log messages
-var debug = require('debug')('WebSSH2')
-var Auth = require('basic-auth')
+const debug = require('debug')('WebSSH2')
+const Auth = require('basic-auth')
 
-let defaultCredentials = {username: null, password: null, privatekey: null};
+const defaultCredentials = { username: null, password: null, privatekey: null }
 
 exports.setDefaultCredentials = function (username, password, privatekey) {
-    defaultCredentials.username = username
-    defaultCredentials.password = password
-    defaultCredentials.privatekey = privatekey
+  defaultCredentials.username = username
+  defaultCredentials.password = password
+  defaultCredentials.privatekey = privatekey
 }
 
 exports.basicAuth = function basicAuth (req, res, next) {
@@ -24,11 +22,11 @@ exports.basicAuth = function basicAuth (req, res, next) {
       ' and password ' + ((myAuth.pass) ? 'exists'.yellow.bold.underline
       : 'is blank'.underline.red.bold))
   } else {
-    req.session.username = defaultCredentials.username;
-    req.session.userpassword = defaultCredentials.password;
-    req.session.privatekey = defaultCredentials.privatekey;
+    req.session.username = defaultCredentials.username
+    req.session.userpassword = defaultCredentials.password
+    req.session.privatekey = defaultCredentials.privatekey
   }
-  if ( (!req.session.userpassword) && (!req.session.privatekey) ) {
+  if ((!req.session.userpassword) && (!req.session.privatekey)) {
     res.statusCode = 401
     debug('basicAuth credential request (401)')
     res.setHeader('WWW-Authenticate', 'Basic realm="WebSSH"')
@@ -41,4 +39,11 @@ exports.basicAuth = function basicAuth (req, res, next) {
 // takes a string, makes it boolean (true if the string is true, false otherwise)
 exports.parseBool = function parseBool (str) {
   return (str.toLowerCase() === 'true')
+}
+
+exports.uuidv4 = function uuidv4 () {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    var r = Math.random() * 16 | 0; var v = c === 'x' ? r : (r & 0x3 | 0x8)
+    return v.toString(16)
+  })
 }
